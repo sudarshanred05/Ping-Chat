@@ -75,7 +75,7 @@ Ping-Chat/
 ## 📸 Screenshots & Demo
 
 ### 🔐 Login Page
-![Login](client/src/assets/assets/assets/screenshots/login.jpg)
+![Login](Ping chat/client/src/assets/assets/assets/screenshots/login.jpg)
 
 ### 📝 Register Page
 ![Register](client/src/assets/assets/assets/screenshots/register.jpg)
