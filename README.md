@@ -19,7 +19,7 @@ Follow the steps below to run the project locally.
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/sudarshanred05/Ping-Chat.git
-cd Ping-Chat
+cd Ping chat
 ```
 
 ---
@@ -38,7 +38,7 @@ This will start the frontend at `http://localhost:3000`.
 ### 3. Setup Server
 Open a **new terminal** and run:
 ```bash
-cd Ping-Chat
+cd Ping chat
 cd server
 npm install
 ```
