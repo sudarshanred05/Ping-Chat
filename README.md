@@ -49,7 +49,6 @@ MONGO_URL=your_mongodb_connection_string
 CLOUDINARY_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-JWT_SECRET=your_jwt_secret
 ```
 
 Then start the backend:
