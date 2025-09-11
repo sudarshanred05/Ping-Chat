@@ -7,17 +7,16 @@ function NoSelectedContact() {
     const [user, setUser] = useState("");
     const getUser = ()=>{
         const existing = localStorage.getItem('chat-app-user');
-  // ...existing code...
+
         if(existing){
             setUser(existing);
-            // ...existing code...
+           console.log("User found:", existing);
         }
     }
 
     useEffect(()=>{
         getUser();
     },
-  // ...existing code...
     [])
 
     return (

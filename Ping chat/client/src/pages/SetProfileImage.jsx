@@ -46,10 +46,8 @@ export default function SetProfileImage() {
         
         const data = new FormData();
         data.append("image", file);
-  // ...existing code...
 
         const response = await axios.post(uploadMedia, data);
-  // ...existing code...
         setProfilePicture(response.data);
       }
 
@@ -69,7 +67,6 @@ export default function SetProfileImage() {
     useEffect(()=>{
         existing()
     },
-  // ...existing code...
     [])
 
   

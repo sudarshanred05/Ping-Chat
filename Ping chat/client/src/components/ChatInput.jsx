@@ -29,13 +29,13 @@ export default function ChatInput({ sendMessage, currentChat }) {
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size < 5 * 1024 * 1024 && ["image/jpeg", "image/png"].includes(file.type)) {
-      setImage(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+      if (file && file.size < 5 * 1024 * 1024 && ["image/jpeg", "image/png"].includes(file.type)) {
+        setImage(file);
+        setPreview(URL.createObjectURL(file));
+      }
+    };
 
     return (
       <>

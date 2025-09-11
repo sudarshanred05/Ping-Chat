@@ -27,7 +27,7 @@ function Chat() {
   }
 
   const getContacts = async()=>{
-    const contacts = await axios.get(`${allUsersRoute}/${currentUser._id}`);
+      const contacts = await axios.get(`${allUsersRoute}/${currentUser._id}`);
     setContacts(contacts.data)
     setIsLoading(false);
   }
@@ -49,7 +49,26 @@ function Chat() {
   useEffect(()=>{
     if(currentUser){
       socket.current = io(APP_HOST);
-      socket.current.emit("add-user", currentUser._id);
+      
+      socket.current.on("connect", () => {
+        console.log("Connected to server");
+        socket.current.emit("add-user", currentUser._id);
+      });
+      
+      socket.current.on("disconnect", () => {
+        console.log("Disconnected from server");
+      });
+      
+      socket.current.on("connect_error", (error) => {
+        console.error("Connection failed:", error);
+      });
+      
+      // Cleanup function
+      return () => {
+        if (socket.current) {
+          socket.current.disconnect();
+        }
+      };
     }
   },[currentUser]);
 

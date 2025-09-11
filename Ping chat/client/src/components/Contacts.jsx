@@ -13,7 +13,7 @@ export default function Contacts(props) {
     const [modalImage, setModalImage] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState(new Set());
 
-  // ...existing code...
+
     useEffect(()=>{
         if(currentUser){
             setCurrentUserName(currentUser.username);
@@ -44,7 +44,7 @@ export default function Contacts(props) {
                     return newSet;
                 });
             });
-
+            // When a component unmounts (or re-renders), React cleans up old listeners to prevent duplicates and memory leaks.
             return () => {
                 socket.current.off("online-users-list");
                 socket.current.off("user-online");

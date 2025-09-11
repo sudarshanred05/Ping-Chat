@@ -49,15 +49,25 @@ io.on("connection", (socket)=>{
   global.chatSocket = socket;
 
   socket.on("add-user", (userId)=>{
+    console.log("User joined:", userId, "with socket:", socket.id);
     onlineUsers.set(userId, socket.id);
+    console.log("Online users:", Array.from(onlineUsers.keys()));
     // Broadcast to all clients that this user is now online
     socket.broadcast.emit("user-online", userId);
   })
 
   socket.on("send-msg", (data)=>{
+    console.log("Message received from:", data.from, "to:", data.to);
     const sendUnderSocket = onlineUsers.get(data.to);
     if(sendUnderSocket){
-      socket.to(sendUnderSocket).emit("msg-recieve", data.message)
+      console.log("Forwarding message to socket:", sendUnderSocket);
+      socket.to(sendUnderSocket).emit("msg-recieve", {
+        message: data.message,
+        from: data.from,
+        imageUrl: data.imageUrl
+      });
+    } else {
+      console.log("Recipient not online:", data.to);
     }
   })
 

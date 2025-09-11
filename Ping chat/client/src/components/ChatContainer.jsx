@@ -30,6 +30,9 @@ export default function ChatContainer(props) {
         if(props.currentChat){
             getAllMessages();
         }
+        
+        // Reset incoming messages when chat changes
+        setIncoming(null);
     },
     [props.currentChat])
 
@@ -39,7 +42,6 @@ export default function ChatContainer(props) {
   const handleSend = async(msg) => {
     const user = await JSON.parse(localStorage.getItem('chat-app-user'));
     if (msg.imageFile) {
-      // Image message
       const formData = new FormData();
       formData.append("image", msg.imageFile);
       formData.append("from", user._id);
@@ -50,46 +52,74 @@ export default function ChatContainer(props) {
         });
         const data = response.data;
         if (data.imageUrl) {
+          // Send image message via socket
+          props.socket.current.emit("send-msg", {
+            to: props.currentChat._id,
+            from: user._id,
+            imageUrl: data.imageUrl
+          });
+          
+          // Update local messages
           const updatedMessages = [...messages];
           updatedMessages.push({ fromSelf: true, imageUrl: data.imageUrl });
           setMessages(updatedMessages);
         } else {
-          // ...existing code...
+          console.error("Error sending image message:", data);  
         }
       } catch (err) {
-  // ...existing code...
+        console.error("Error sending image message:", err);
       }
     } else {
       // Text message
-      await axios.post(sendMessageRoute, {
-        from: user._id,
-        to: props.currentChat._id,
-        message: msg
-      });
-      props.socket.current.emit("send-msg", {
-        to: props.currentChat._id,
-        from: user._id,
-        message: msg
-      });
-      props.socket.current.emit("send-notification", {
-        to: props.currentChat._id,
-        from: user._id,
-        message: msg
-      });
-      const updatedMessages = [...messages];
-      updatedMessages.push({ fromSelf: true, message: msg });
-      setMessages(updatedMessages);
+      try {
+        await axios.post(sendMessageRoute, {
+          from: user._id,
+          to: props.currentChat._id,
+          message: msg
+        });
+        
+        // Send message via socket
+        props.socket.current.emit("send-msg", {
+          to: props.currentChat._id,
+          from: user._id,
+          message: msg
+        });
+        console.log("Message sent via socket:", {
+          to: props.currentChat._id,
+          from: user._id,
+          message: msg
+        });
+        
+        // Update local messages
+        const updatedMessages = [...messages];
+        updatedMessages.push({ fromSelf: true, message: msg });
+        setMessages(updatedMessages);
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
     useEffect(()=>{
         if(props.socket.current){
-            props.socket.current.on("msg-recieve", (msg)=>{
-                setIncoming({fromSelf : false, message: msg})
-            });
+            const handleMessageReceive = (data) => {
+                console.log("Message received via socket:", data);
+                if (data.imageUrl) {
+                    setIncoming({fromSelf: false, imageUrl: data.imageUrl});
+                } else {
+                    setIncoming({fromSelf: false, message: data.message});
+                }
+            };
+            
+            props.socket.current.on("msg-recieve", handleMessageReceive);
+            
+            // Cleanup function to remove event listeners
+            return () => {
+                props.socket.current.off("msg-recieve", handleMessageReceive);
+            };
         }
     },
-    []);
+    [props.socket]);
 
     useEffect(()=>{
         incoming && (setMessages((prev) => [...prev, incoming]));
